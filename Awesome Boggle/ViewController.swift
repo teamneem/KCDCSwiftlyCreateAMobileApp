@@ -10,16 +10,47 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    var boggleView: BoggleView?
+    var boggleModel: BoggleModel?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        boggleView = view as? BoggleView
+        boggleView?.delegate = self
+        boggleModel = BoggleModel()
+        resetButtonTitles()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func resetButtonTitles() {
+        let numberOfButtons = boggleView?.buttons.count
+        
+        if let model = boggleModel, let numberOfButtons = numberOfButtons {
+            let titleArray = model.lettersArray(numberOfLetters: numberOfButtons)
+            boggleView?.setButtonTitles(titleArray)
+        }
     }
-
-
 }
+
+extension ViewController: BoggleViewProtocol {
+    func resetButtonPressed() {
+        resetButtonTitles()
+        boggleModel?.resetAllTheWords()
+    }
+    
+    func saveWord(word: String) {
+        if let currentWords = boggleModel?.addWord(word: word) {
+            boggleView?.setAllWordsLabelText(currentWords)
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
 
